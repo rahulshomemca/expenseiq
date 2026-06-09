@@ -6,6 +6,18 @@ export default defineConfig({
     environment: "node",
     globals: true,
     include: ["src/**/*.{test,spec}.ts"],
+    coverage: {
+      provider: "v8",
+      include: [
+        "src/lib/currency.ts",
+        "src/lib/budget.ts",
+        "src/lib/actions/**/*.ts",
+        "src/lib/validations/**/*.ts",
+      ],
+      exclude: ["src/generated/**", "src/**/*.test.ts"],
+      thresholds: { lines: 80, functions: 80, branches: 70, statements: 80 },
+      reporter: ["text", "lcov"],
+    },
     server: {
       deps: {
         // Process next-auth and @auth/* through Vite so the alias below
