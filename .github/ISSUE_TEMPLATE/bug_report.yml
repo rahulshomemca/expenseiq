@@ -1,0 +1,84 @@
+name: Bug Report
+description: Report a bug or unexpected behavior in ExpenseIQ
+title: "[Bug]: "
+labels:
+  - bug
+assignees: []
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to report a bug. Fill in as much detail as you can — the more context, the faster it gets fixed.
+
+  - type: input
+    id: title
+    attributes:
+      label: Short description
+      description: One sentence summarising the bug.
+      placeholder: "e.g. Currency conversion shows incorrect total on the dashboard"
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: A clear and complete description of the bug and its impact.
+      placeholder: "When I add a 3-month expense, the dashboard total is wrong by about $3 ..."
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps-to-reproduce
+    attributes:
+      label: Steps to Reproduce
+      description: Exact steps that consistently trigger the bug.
+      placeholder: |
+        1. Sign in as any user
+        2. Go to /expenses and click "Add Expense"
+        3. Enter amount 306.34, monthly rate 1%, months 3
+        4. Submit the form
+        5. Navigate to /dashboard and observe the total
+    validations:
+      required: true
+
+  - type: input
+    id: expected
+    attributes:
+      label: Expected behavior
+      description: What should happen.
+      placeholder: "Dashboard total shows $312.50"
+    validations:
+      required: true
+
+  - type: input
+    id: actual
+    attributes:
+      label: Actual behavior
+      description: What actually happens instead.
+      placeholder: "Dashboard total shows $315.62"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: severity
+    attributes:
+      label: Severity
+      description: How badly does this affect users?
+      options:
+        - "Critical — data loss or security vulnerability"
+        - "High — major feature is broken or unusable"
+        - "Medium — feature works but produces incorrect results"
+        - "Low — cosmetic issue or minor inconvenience"
+    validations:
+      required: true
+
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment (optional)
+      description: Browser, OS, or any other relevant context.
+      placeholder: "Chrome 125 on macOS 14, Node 22, Next.js 15"
+    validations:
+      required: false
