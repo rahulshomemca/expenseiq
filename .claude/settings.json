@@ -1,0 +1,73 @@
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "input=$(cat); cmd=$(echo \"$input\" | jq -r '.tool_input.command // \"\"' 2>/dev/null || echo ''); if echo \"$cmd\" | grep -qE 'prisma migrate reset|DROP (TABLE|DATABASE)|DROP SCHEMA'; then printf '\\n⚠  BLOCKED: Destructive database command intercepted.\\nRun this manually in your terminal if intentional.\\n' >&2; exit 2; fi"
+          }
+        ]
+      },
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "input=$(cat); file=$(echo \"$input\" | jq -r '.tool_input.file_path // \"\"' 2>/dev/null || echo ''); if echo \"$file\" | grep -qE '\\.env$'; then printf '\\n⚠  Warning: Editing .env directly. Commit changes to .env.example instead.\\n'; fi"
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "input=$(cat); file=$(echo \"$input\" | jq -r '.tool_input.file_path // \"\"' 2>/dev/null || echo ''); if echo \"$file\" | grep -qE '\\.(ts|tsx|js|jsx|css|json)$'; then cd /Users/rahulshome/Documents/code/expenseiq && npx prettier --write \"$file\" --log-level warn 2>/dev/null || true; fi"
+          }
+        ]
+      },
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "input=$(cat); file=$(echo \"$input\" | jq -r '.tool_input.file_path // \"\"' 2>/dev/null || echo ''); if echo \"$file\" | grep -q 'schema\\.prisma'; then echo '⚙  Schema changed — regenerating Prisma client...'; cd /Users/rahulshome/Documents/code/expenseiq && npx prisma generate 2>&1 | tail -4; fi"
+          }
+        ]
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "input=$(cat); output=$(echo \"$input\" | jq -r '.tool_response // \"\"' 2>/dev/null || echo ''); if echo \"$output\" | grep -qE 'PASS|FAIL|Tests:|passed|failed'; then echo '--- Test summary ---'; echo \"$output\" | grep -E '(PASS|FAIL|✓|✗|Tests:|passed|failed|Duration)' | head -8; echo '---'; fi"
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "cd /Users/rahulshome/Documents/code/expenseiq && echo '--- TypeScript check ---' && result=$(npx tsc --noEmit 2>&1); if [ -z \"$result\" ]; then echo '✓ No type errors'; else echo \"$result\" | head -25; echo '--- end ---'; fi"
+          }
+        ]
+      }
+    ],
+    "Notification": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "osascript -e 'display notification \"Claude Code needs your attention\" with title \"ExpenseIQ\" sound name \"Ping\"' 2>/dev/null || true"
+          }
+        ]
+      }
+    ]
+  }
+}
