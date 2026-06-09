@@ -42,5 +42,5 @@ export function convertMultiMonthExpense(
 ): number {
   if (months < 1) throw new RangeError("months must be at least 1");
   if (monthlyRate < 0) throw new RangeError("monthlyRate must be non-negative");
-  return baseAmount * Math.pow(1 + monthlyRate, months);
+  return baseAmount * Math.pow(1 + monthlyRate, months - 1);
 }
